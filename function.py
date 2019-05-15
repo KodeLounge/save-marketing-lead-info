@@ -32,10 +32,12 @@ def save_marketing_lead_info(event, context):
 
 def send_mail(context):
   SENDER = os.environ.get('SENDER_SUPPORT_EMAIL') or "KL Marketing Enquiries <enquiries@kodelounge.com>"
-  RECIPIENT = os.environ.get('RECEIVER_SUPPORT_EMAIL') or "prateek@kodelounge.com"
   AWS_REGION = "us-west-2"
   SUBJECT = "New Lead from KL Marketing"
   CHARSET = 'UTF-8'
+  recipients = os.environ.get('RECEIVER_EMAIL') or "sujit@kodelounge.com"
+  recipients = recipients.split(',')
+  recipients = [r.strip() for r in recipients]
 
   mail_body_params = {
     'name': context['name'],
@@ -56,9 +58,7 @@ def send_mail(context):
   try:
     response = client.send_email(
         Destination={
-            'ToAddresses': [
-                RECIPIENT,
-            ],
+            'ToAddresses': recipients
         },
         Message={
             'Body': {
